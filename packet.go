@@ -123,6 +123,39 @@ func NewPacket(op Operation, srcHW net.HardwareAddr, srcIP netip.Addr, dstHW net
 	}, nil
 }
 
+func NewRARP(hwaddr net.HardwareAddr, srcIP netip.Addr, dstHW net.HardwareAddr, dstIP netip.Addr) (*Packet, error) {
+	l3bcast := netip.MustParseAddr("0.0.0.0")
+
+	// Validate hardware addresses for minimum length, and matching length
+	if len(hwaddr) < 6 {
+		return nil, ErrInvalidHardwareAddr
+	}
+	if !bytes.Equal(ethernet.Broadcast, dstHW) {
+		return nil, ErrInvalidHardwareAddr
+	}
+
+	const (
+		EtherTypeRARP ethernet.EtherType = 0x8035
+	)
+	return &Packet{
+		// There is no Go-native way to detect hardware type of a network
+		// interface, so default to 1 (ethernet 10Mb) for now
+		HardwareType: 1,
+
+		// Default to EtherType for IPv4
+		ProtocolType: uint16(EtherTypeRARP),
+
+		// Populate other fields using input data
+		HardwareAddrLength: uint8(len(hwaddr)),
+		IPLength:           uint8(4),
+		Operation:          OperationReverseRequest,
+		SenderHardwareAddr: hwaddr,
+		SenderIP:           l3bcast,
+		TargetHardwareAddr: hwaddr,
+		TargetIP:           l3bcast,
+	}, nil
+}
+
 // MarshalBinary allocates a byte slice containing the data from a Packet.
 //
 // MarshalBinary never returns an error.
