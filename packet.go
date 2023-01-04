@@ -123,14 +123,14 @@ func NewPacket(op Operation, srcHW net.HardwareAddr, srcIP netip.Addr, dstHW net
 	}, nil
 }
 
-func NewRARP(hwaddr net.HardwareAddr, srcIP netip.Addr, dstHW net.HardwareAddr, dstIP netip.Addr) (*Packet, error) {
+func NewRARP(hwaddr net.HardwareAddr) (*Packet, error) {
 	l3bcast := netip.MustParseAddr("0.0.0.0")
 
 	// Validate hardware addresses for minimum length, and matching length
 	if len(hwaddr) < 6 {
 		return nil, ErrInvalidHardwareAddr
 	}
-	if !bytes.Equal(ethernet.Broadcast, dstHW) {
+	if !bytes.Equal(ethernet.Broadcast, hwaddr) {
 		return nil, ErrInvalidHardwareAddr
 	}
 
