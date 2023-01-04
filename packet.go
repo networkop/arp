@@ -32,8 +32,9 @@ type Operation uint16
 
 // Operation constants which indicate an ARP request or reply.
 const (
-	OperationRequest Operation = 1
-	OperationReply   Operation = 2
+	OperationRequest        Operation = 1
+	OperationReply          Operation = 2
+	OperationReverseRequest Operation = 3
 )
 
 // A Packet is a raw ARP packet, as described in RFC 826.
