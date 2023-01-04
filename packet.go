@@ -134,16 +134,13 @@ func NewRARP(hwaddr net.HardwareAddr) (*Packet, error) {
 		return nil, ErrInvalidHardwareAddr
 	}
 
-	const (
-		EtherTypeRARP ethernet.EtherType = 0x8035
-	)
 	return &Packet{
 		// There is no Go-native way to detect hardware type of a network
 		// interface, so default to 1 (ethernet 10Mb) for now
 		HardwareType: 1,
 
 		// Default to EtherType for IPv4
-		ProtocolType: uint16(EtherTypeRARP),
+		ProtocolType: uint16(ethernet.EtherTypeIPv4),
 
 		// Populate other fields using input data
 		HardwareAddrLength: uint8(len(hwaddr)),
