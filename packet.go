@@ -130,9 +130,6 @@ func NewRARP(hwaddr net.HardwareAddr) (*Packet, error) {
 	if len(hwaddr) < 6 {
 		return nil, ErrInvalidHardwareAddr
 	}
-	if !bytes.Equal(ethernet.Broadcast, hwaddr) {
-		return nil, ErrInvalidHardwareAddr
-	}
 
 	return &Packet{
 		// There is no Go-native way to detect hardware type of a network
